@@ -76,6 +76,10 @@ export default function OrderBook() {
     router.push("/create-order");
   };
 
+  const handleRowClick = (orderId: string) => {
+    router.push(`/order-details?id=${orderId}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -157,7 +161,7 @@ export default function OrderBook() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredData.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr key={item.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleRowClick(item.id)}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{item.bondName}</div>
                       <div className="text-sm text-gray-500">ID: {item.id}</div>
@@ -181,7 +185,7 @@ export default function OrderBook() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{item.issuer}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium" onClick={(e) => e.stopPropagation()}>
                       <button className="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
                       <button className="text-red-600 hover:text-red-900">Delete</button>
                     </td>
