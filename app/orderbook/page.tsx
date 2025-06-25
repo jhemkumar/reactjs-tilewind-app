@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface OrderBookItem {
   id: string;
@@ -12,6 +13,7 @@ interface OrderBookItem {
 }
 
 export default function OrderBook() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
 
@@ -70,6 +72,10 @@ export default function OrderBook() {
     }
   };
 
+  const handleAddNewOrder = () => {
+    router.push("/create-order");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -110,7 +116,10 @@ export default function OrderBook() {
               </select>
             </div>
             <div className="flex items-end">
-              <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+              <button 
+                onClick={handleAddNewOrder}
+                className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              >
                 Add New Order
               </button>
             </div>
