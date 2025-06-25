@@ -1,263 +1,72 @@
 "use client";
-import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
-  const [form, setForm] = useState({
-    communicationType: "Phone",
-    amount: "",
-    dealDate: new Date().toISOString().split('T')[0],
-    valueDate: "",
-    maturity: "",
-    spread: "",
-    document: null as File | null,
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, files } = e.target as HTMLInputElement;
-    if (name === "document" && files) {
-      setForm({ ...form, document: files[0] });
-    } else {
-      setForm({ ...form, [name]: value });
-      
-      // Real-time validation for spread field
-      if (name === "spread") {
-        const spreadError = validateSpread(value);
-        if (spreadError) {
-          setErrors({ ...errors, spread: spreadError });
-        } else {
-          // Clear error if validation passes
-          const newErrors = { ...errors };
-          delete newErrors.spread;
-          setErrors(newErrors);
-        }
-      } else {
-        // Clear error for other fields when user starts typing
-        if (errors[name]) {
-          const newErrors = { ...errors };
-          delete newErrors[name];
-          setErrors(newErrors);
-        }
-      }
-    }
-  };
-
-  const validateSpread = (value: string) => {
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) {
-      return "Spread must be a valid number";
-    }
-    if (numValue < 0 || numValue > 5) {
-      return "Spread must be between 0 and 5";
-    }
-    return "";
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate spread
-    const spreadError = validateSpread(form.spread);
-    if (spreadError) {
-      setErrors({ ...errors, spread: spreadError });
-      return;
-    }
-    
-    setSubmitted(true);
-    setErrors({});
-  };
-
-  const handleCancel = () => {
-    // Handle cancel logic here
-    console.log("Form cancelled");
-  };
-
-  const handleReset = () => {
-    setForm({
-      communicationType: "Phone",
-      amount: "",
-      dealDate: new Date().toISOString().split('T')[0],
-      valueDate: "",
-      maturity: "",
-      spread: "",
-      document: null,
-    });
-    setSubmitted(false);
-    setErrors({});
-  };
-
-  const ButtonGroup = () => (
-    <div className="flex justify-end gap-4 mb-8">
-      <button
-        type="submit"
-        className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-semibold"
-      >
-        Submit
-      </button>
-      <button
-        type="button"
-        onClick={handleCancel}
-        className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors font-semibold"
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        onClick={handleReset}
-        className="px-6 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors font-semibold"
-      >
-        Reset
-      </button>
-    </div>
-  );
-
   return (
-    <div className="min-h-screen min-w-full bg-gray-100 flex flex-col p-0 m-0">
-      {/* Header Section */}
-      <div className="bg-gray-600 text-white p-6 shadow-md">
-        <h1 className="text-3xl font-bold text-center">Bonds Application </h1>
-      </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-6">
+      <div className="max-w-4xl mx-auto text-center">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Bonds Application</h1>
+          <p className="text-xl text-gray-600">Welcome to the Bonds Management System</p>
+        </div>
 
-      {/* Form Section */}
-      <div className="flex-1 flex flex-col justify-center items-center p-12">
-        <div className="bg-white p-12 rounded-none shadow-none w-full h-full">
-          <form onSubmit={handleSubmit} className="w-full">
-            {/* Top Buttons */}
-            <ButtonGroup />
-
-            <div className="flex flex-col gap-8 mb-8">
-              {/* Section 1: Communication Logs */}
-              <div className="w-full">
-                <h3 className="text-lg font-semibold mb-4 border-b pb-2">1. Communication Logs</h3>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2" htmlFor="communicationType">Communication Type</label>
-                  <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="communicationType"
-                    name="communicationType"
-                    value={form.communicationType}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="Phone">Phone</option>
-                    <option value="Email">Email</option>
-                    <option value="Fax">Fax</option>
-                  </select>
+        {/* Navigation Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Create Order Card */}
+          <Link href="/create-order" className="group">
+            <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 border border-gray-200 hover:border-blue-300">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
                 </div>
-              </div>
-
-              {/* Section 2: Bond Details */}
-              <div className="w-full">
-                <h3 className="text-lg font-semibold mb-4 border-b pb-2">2. Bond Details</h3>
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                 
-                  <div className="flex-1">
-                    <label className="block text-gray-700 mb-2" htmlFor="dealDate">Deal Date</label>
-                    <input
-                      className="w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      type="date"
-                      id="dealDate"
-                      name="dealDate"
-                      value={form.dealDate}
-                      onChange={handleChange}
-                      required
-                      readOnly
-                      disabled
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-gray-700 mb-2" htmlFor="valueDate">Value Date</label>
-                    <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      type="date"
-                      id="valueDate"
-                      name="valueDate"
-                      value={form.valueDate}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-gray-700 mb-2" htmlFor="maturity">Maturity Date</label>
-                    <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      type="date"
-                      id="maturity"
-                      name="maturity"
-                      value={form.maturity}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4 mb-4">
-                <div className="flex-1">
-                    <label className="block text-gray-700 mb-2" htmlFor="amount">Amount</label>
-                    <input
-                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      type="number"
-                      id="amount"
-                      name="amount"
-                      value={form.amount}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-gray-700 mb-2" htmlFor="spread">Spread (0-5)</label>
-                  <input
-                    className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.spread ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="5"
-                    id="spread"
-                    name="spread"
-                    value={form.spread}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.spread && (
-                    <div className="mt-1 text-sm text-red-600">{errors.spread}</div>
-                  )}
-                  </div>
-                </div>
-               
-              </div>
-
-              {/* Section 3: Document Attachments */}
-              <div className="w-full">
-                <h3 className="text-lg font-semibold mb-4 border-b pb-2">3. Document Attachments</h3>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2" htmlFor="document">Attach Document</label>
-                  <input
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    type="file"
-                    id="document"
-                    name="document"
-                    onChange={handleChange}
-                    accept=".pdf,.doc,.docx,.jpg,.png"
-                  />
-                  {form.document && (
-                    <div className="mt-2 text-sm text-gray-600">Selected: {form.document.name}</div>
-                  )}
+                <h2 className="text-2xl font-semibold text-gray-900 mb-2">Create Order</h2>
+                <p className="text-gray-600 mb-4">Submit new bond applications with detailed information</p>
+                <div className="text-blue-600 font-medium group-hover:text-blue-700">
+                  Get Started →
                 </div>
               </div>
             </div>
+          </Link>
 
-            {/* Bottom Buttons */}
-            <ButtonGroup />
-
-            {submitted && (
-              <div className="mt-4 p-3 bg-green-100 text-green-800 rounded text-center w-full">
-                Your bond application has been received!
+          {/* Order Book Card */}
+          <Link href="/orderbook" className="group">
+            <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 border border-gray-200 hover:border-green-300">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-2">Order Book</h2>
+                <p className="text-gray-600 mb-4">View and manage all bond orders in the system</p>
+                <div className="text-green-600 font-medium group-hover:text-green-700">
+                  View Orders →
+                </div>
               </div>
-            )}
-          </form>
+            </div>
+          </Link>
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-12 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="flex items-center text-gray-600">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+              Create new bond applications
+            </div>
+            <div className="flex items-center text-gray-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+              Track order status
+            </div>
+            <div className="flex items-center text-gray-600">
+              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+              Manage document attachments
+            </div>
+          </div>
         </div>
       </div>
     </div>
